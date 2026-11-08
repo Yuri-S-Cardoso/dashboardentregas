@@ -1,0 +1,47 @@
+{% extends 'base.html' %}{% load brasil static %}
+{% block content %}
+<div class="cabecalho"><div><p class="legenda">ENTREGAS · ESPELHOS · PAGAMENTOS</p><h1>Conferência Financeira</h1></div><a class="botao secundario" href="{% url 'painel:inicio' %}?{{ filtros_query }}">Ver indicadores</a></div>
+{% include 'painel/filtros.html' %}
+{% if dashboard %}
+{% include 'painel/exportacoes.html' %}
+<p>A conferência compara competências, quantidades e valores. Os documentos não identificam cada código de entrega. Valores previstos, informados e recebidos permanecem separados.</p>
+<div class="acoes"><a href="{% url 'conferencia:novo_espelho' %}">Cadastrar espelho</a><a href="{% url 'conferencia:pagamentos' %}">Pagamentos recebidos</a></div>
+<h2>Conferência por data</h2>
+<p class="ajuda">Diferença = registrado − informado. Sem espelho completo e confiável, a diferença fica não informada. Possíveis duplicidades exigem revisão; nenhum documento é excluído automaticamente.</p>
+<div class="tabela"><table>
+  <thead><tr><th>Competência</th><th>Baixas registradas</th><th>Baixas empresa</th><th>Dif. baixas</th><th>Insucessos registrados</th><th>Insucessos empresa</th><th>Dif. insucessos</th><th>Previsto</th><th>Informado</th><th>Diferença financeira</th><th>Situação e documentos</th></tr></thead>
+  <tbody>{% for dia in dashboard.auditoria %}<tr>
+    <td>{{ dia.data|date:'d/m/Y' }}</td><td>{{ dia.baixas }}</td><td>{{ dia.baixas_empresa|default_if_none:'Não informado' }}</td><td>{{ dia.diferenca_baixas|default_if_none:'Não informado' }}</td><td>{{ dia.insucessos }}</td><td>{{ dia.insucessos_empresa|default_if_none:'Não informado' }}</td><td>{{ dia.diferenca_insucessos|default_if_none:'Não informado' }}</td><td>{{ dia.receita|reais }}</td><td>{{ dia.valor_empresa|reais }}{% if dia.valor_empresa is None and dia.valor_empresa_conhecido is not None %}<small class="bloco">Parcial conhecido: {{ dia.valor_empresa_conhecido|reais }}</small>{% endif %}</td><td>{{ dia.diferenca|reais }}</td>
+    <td><strong class="status-conferencia">{{ dia.status }}</strong>{% for doc in dia.documentos %}<small class="bloco"><a href="{% url 'conferencia:editar_espelho' doc.id %}">#{{ doc.id }} · {{ doc.referencia|default:'Sem referência' }}</a> · {{ doc.origem }}</small>{% endfor %}{% for grupo in dia.duplicidades %}<small class="bloco alerta">Possível duplicidade entre registros: {{ grupo|join:', ' }}.</small>{% endfor %}</td>
+  </tr>{% empty %}<tr><td colspan="11">Sem competências para conferir no período.</td></tr>{% endfor %}</tbody>
+</table></div>
+<h2>Consolidação por quinzena</h2>
+{% for quinzena in dashboard.quinzenas %}
+<section class="cartao quinzena">
+  <div class="cabecalho"><h3>{{ quinzena.inicio|date:'d/m/Y' }} a {{ quinzena.fim|date:'d/m/Y' }}</h3><strong class="situacao">{{ quinzena.status }}</strong></div>
+  {% if quinzena.recorte_parcial %}<p class="alerta">O filtro recorta parte desta quinzena. Entregas e espelhos seguem o recorte; pagamentos representam a quinzena integral, sem rateio. O saldo não é calculado neste recorte.</p>{% endif %}
+  <div class="resumo-grade">
+    <p><span>Tentativas</span><strong>{{ quinzena.tentativas }}</strong></p>
+    <p><span>Baixas / insucessos</span><strong>{{ quinzena.baixas }} / {{ quinzena.insucessos }}</strong></p>
+    <p><span>Previsto</span><strong>{{ quinzena.receita|reais }}</strong></p>
+    <p><span>Informado conhecido{% if not quinzena.informado_completo %} · conferência incompleta{% endif %}</span><strong>{{ quinzena.valor_empresa|reais }}</strong></p>
+    <p><span>Diferença em competências confrontáveis</span><strong>{{ quinzena.diferenca|reais }}</strong><small>{{ quinzena.competencias_confrontaveis }} de {{ quinzena.competencias_total }} competência(s).</small></p>
+    <p><span>Recebido da quinzena</span><strong>{{ quinzena.recebido|reais }}</strong><small>{{ quinzena.pagamentos_quantidade }} pagamento(s) registrado(s).</small></p>
+    <p><span>Saldo do valor informado</span><strong>{{ quinzena.saldo|reais }}</strong><small>Saldo positivo: a receber; negativo: recebido acima do informado. Exige conferência completa e pagamento registrado.</small></p>
+  </div>
+  <p><strong>{{ quinzena.status_pagamento }}</strong></p>
+  <p>Datas sem espelho: {% for dia in quinzena.datas_sem_espelho %}{{ dia|date:'d/m/Y' }}{% if not forloop.last %}, {% endif %}{% empty %}Nenhuma nos registros do recorte.{% endfor %}</p>
+  <p>Datas com divergências confirmadas: {% for dia in quinzena.datas_divergentes %}{{ dia|date:'d/m/Y' }}{% if not forloop.last %}, {% endif %}{% empty %}Nenhuma nos dados confrontáveis.{% endfor %}</p>
+  <p class="ajuda">Ausência de pagamento não comprova inadimplência. A diferença considera somente competências efetivamente confrontáveis; datas sem espelho não geram prejuízo confirmado.</p>
+</section>
+{% empty %}<p class="cartao">Sem quinzenas com dados no período.</p>{% endfor %}
+{% if dashboard.pagamentos_sem_vinculo %}<section class="cartao"><h2>Pagamentos com período fora do padrão quinzenal</h2><p>Estes registros não foram rateados nem atribuídos a mais de uma quinzena. Revise o período cadastrado.</p><ul>{% for pagamento in dashboard.pagamentos_sem_vinculo %}<li><a href="{% url 'conferencia:editar_pagamento' pagamento.pk %}">Pagamento #{{ pagamento.pk }}</a> · {{ pagamento.inicio_quinzena|date:'d/m/Y' }} a {{ pagamento.fim_quinzena|date:'d/m/Y' }} · {{ pagamento.valor_recebido|reais }}</li>{% endfor %}</ul></section>{% endif %}
+<section class="cartao"><h2>Indicadores financeiros de apoio</h2>
+  <p>Ganho médio por baixa: <strong>{{ resumo.ganho_medio_baixa|reais }}</strong>. Receita / ocorrências de baixa, com preços históricos preservados.</p>
+  <p>Projeção condicional para {{ dashboard.projecao.dias_cenario }} dia(s) com entregas: <strong>{{ dashboard.projecao.receita_cenario|reais }}</strong>. {{ dashboard.projecao.metodologia }}</p>
+</section>
+{% include 'painel/auditoria_operacional.html' %}
+{{ dashboard.graficos|json_script:'dados-graficos' }}
+{% endif %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/filtros.js' %}" defer></script><script src="{% static 'js/graficos.js' %}" defer></script>{% endblock %}

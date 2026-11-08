@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block content %}<h1>Não foi possível exportar</h1><section class="cartao"><p>{{ erro|default:'Confira os filtros informados e tente novamente.' }}</p>{% if filtro %}{{ filtro.errors }}{% endif %}<a href="{% url 'painel:inicio' %}">Voltar ao painel</a></section>{% endblock %}

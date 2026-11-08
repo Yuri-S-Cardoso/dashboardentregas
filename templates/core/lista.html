@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="cabecalho"><h1>{{ titulo }}</h1><div class="acoes">{% if url_lista == 'entregas:lista' %}<a class="botao" href="{% url 'entregas:lote' %}">Adicionar Entregas em Lote</a>{% endif %}<a class="botao{% if url_lista == 'entregas:lista' %} secundario{% endif %}" href="{% url url_novo %}">Novo registro</a></div></div>
+{% if url_lista == 'conferencia:espelhos' or url_lista == 'conferencia:pagamentos' %}
+<div class="acoes"><a href="{% url 'conferencia:espelhos' %}">Espelhos</a><a href="{% url 'conferencia:pagamentos' %}">Pagamentos recebidos</a></div>
+{% endif %}
+{% if filtro %}
+<form method="get" class="filtros cartao">
+  {% for field in filtro %}<div class="campo">{{ field.label_tag }}{{ field }}{{ field.errors }}</div>{% endfor %}
+  <button type="submit">Filtrar</button><a href="{% url 'entregas:lista' %}">Limpar filtros</a>
+</form>
+{% endif %}
+<p>{{ paginator.count }} registro{{ paginator.count|pluralize:"s" }} encontrado{{ paginator.count|pluralize:"s" }}.</p>
+{% if object_list %}<div class="tabela">{% include tabela %}</div>{% else %}<div class="cartao"><p>Nenhum registro encontrado.</p></div>{% endif %}
+{% if is_paginated %}
+<nav aria-label="Paginação" class="paginacao">
+  {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}{% if filtros_query %}&amp;{{ filtros_query }}{% endif %}">Anterior</a>{% endif %}
+  <span>Página {{ page_obj.number }} de {{ paginator.num_pages }}</span>
+  {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}{% if filtros_query %}&amp;{{ filtros_query }}{% endif %}">Próxima</a>{% endif %}
+</nav>
+{% endif %}
+{% endblock %}

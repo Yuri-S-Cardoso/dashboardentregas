@@ -1,0 +1,15 @@
+{% load brasil %}
+<section class="cartao"><div class="resumo-grade">
+  <p><span>KM conhecidos{% if not resumo.km_completo %} · parcial{% endif %}</span><strong>{{ resumo.km|numero }}</strong></p>
+  <p><span>Litros informados</span><strong>{{ resumo.litros|numero }}</strong></p>
+  <p><span>Consumo comparável (km/L)</span><strong>{{ resumo.consumo_km_l|numero }}</strong><small>{{ resumo.jornadas_consumo }} jornada(s); {{ resumo.km_consumo|numero }} km / {{ resumo.litros_consumo|numero }} L.</small></p>
+  <p><span>Combustível conhecido</span><strong>{{ resumo.combustivel|reais }}</strong></p>
+  <p><span>Outros custos informados</span><strong>{{ resumo.outros_custos|reais }}</strong></p>
+  <p><span>Custos conhecidos{% if not resumo.custos_completos %} · parcial{% endif %}</span><strong>{{ resumo.custos_conhecidos|reais }}</strong></p>
+  <p><span>Custo conhecido por tentativa</span><strong>{{ resumo.custo_por_tentativa|reais }}</strong><small>Parcial se houver lacunas; {{ resumo.tentativas_com_custos }} tentativa(s) em dias com custos.</small></p>
+  <p><span>Custo conhecido por KM</span><strong>{{ resumo.custo_por_km|reais }}</strong><small>Somente jornadas com custos e KM; pode ser parcial.</small></p>
+  <p><span>Faturamento por KM</span><strong>{{ resumo.receita_por_km|reais }}</strong><small>Somente datas com todos os odômetros informados.</small></p>
+  <p><span>Resultado com custos conhecidos</span><strong>{{ resumo.resultado_parcial|reais }}</strong><small>{% if not resumo.custos_completos %}Parcial: custos ausentes não foram estimados.{% else %}Custos completos no recorte.{% endif %}</small></p>
+  <p><span>Resultado líquido completo</span><strong>{{ resumo.resultado_liquido|reais }}</strong><small>Exige ambos os campos de custo em todas as jornadas e cobertura das datas operacionais.</small></p>
+  <p><span>Margem líquida completa</span><strong>{{ resumo.margem_liquida|indicador }}{% if resumo.margem_liquida is not None %}%{% endif %}</strong></p>
+</div></section>

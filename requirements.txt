@@ -1,0 +1,11 @@
+# Django 5.2 LTS; openpyxl lê Excel localmente; tzdata fornece fusos no Windows.
+Django==5.2.18
+openpyxl==3.1.5
+tzdata==2026.5
+# Servidor Windows e estáticos locais, sem runserver/CDN no uso diário.
+waitress==3.0.2
+whitenoise==6.12.0
+# Dependências transitivas fixadas para reproduzir o ambiente validado.
+asgiref==3.12.1
+sqlparse==0.6.0
+et-xmlfile==2.0.0

@@ -1,0 +1,10 @@
+<details class="cartao exportacoes"><summary>Exportar relatórios</summary>
+  <p>Arquivos de saída para consulta. Não são backups nem entradas automáticas do importador original.</p>
+  <div class="acoes">
+    <a class="botao" href="{% url 'painel:exportar_excel' %}?{{ filtros_query }}">Excel do período</a>
+    <a class="botao secundario" href="{% url 'painel:exportar_csv' %}?{{ filtros_query }}">CSV de entregas do período</a>
+    <a href="{% url 'painel:exportar_excel' %}?periodo=todos">Excel completo</a>
+    <a href="{% url 'painel:exportar_csv' %}?periodo=todos">CSV completo</a>
+  </div>
+  <p class="ajuda">Excel contém cinco abas com dados de negócio e resumo. CSV usa ponto e vírgula e texto UTF-8. Campos ausentes ficam vazios; textos perigosos são protegidos contra fórmulas.</p>
+</details>

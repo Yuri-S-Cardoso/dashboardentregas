@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Excluir entrega</h1>
+<section class="cartao formulario">
+  <p>Confirma a exclusão da entrega <strong>{{ object.codigo }}</strong>, registrada em {{ object.data|date:'d/m/Y' }}{% if object.horario %} às {{ object.horario|time:'H:i:s' }}{% else %}, com horário não informado{% endif %}?</p>
+  <p>Esta ação remove somente este registro.</p>
+  <form method="post">{% csrf_token %}<div class="acoes"><button class="perigo" type="submit">Confirmar exclusão</button><a href="{% url 'entregas:lista' %}">Cancelar</a></div></form>
+</section>
+{% endblock %}

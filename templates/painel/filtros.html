@@ -1,0 +1,18 @@
+<form method="get" class="cartao filtro-painel" data-filtro-periodo>
+  <h2>Filtrar o período</h2>
+  {{ filtro.non_field_errors }}
+  <div class="grade-filtros">
+    <div class="campo">{{ filtro.periodo.label_tag }}{{ filtro.periodo }}{{ filtro.periodo.errors }}</div>
+    <div class="campo" data-periodos="intervalo">{{ filtro.inicio.label_tag }}{{ filtro.inicio }}{{ filtro.inicio.errors }}</div>
+    <div class="campo" data-periodos="intervalo">{{ filtro.fim.label_tag }}{{ filtro.fim }}{{ filtro.fim.errors }}</div>
+    <div class="campo" data-periodos="dia">{{ filtro.dia.label_tag }}{{ filtro.dia }}{{ filtro.dia.errors }}</div>
+    <div class="campo" data-periodos="semana">{{ filtro.semana.label_tag }}{{ filtro.semana }}{{ filtro.semana.errors }}<small>{{ filtro.semana.help_text }}</small></div>
+    <div class="campo" data-periodos="mes quinzena">{{ filtro.mes.label_tag }}{{ filtro.mes }}{{ filtro.mes.errors }}</div>
+    <div class="campo" data-periodos="mes quinzena">{{ filtro.ano.label_tag }}{{ filtro.ano }}{{ filtro.ano.errors }}</div>
+    <div class="campo" data-periodos="quinzena">{{ filtro.quinzena.label_tag }}{{ filtro.quinzena }}{{ filtro.quinzena.errors }}</div>
+    {% if not compacto %}<div class="campo">{{ filtro.dias_projecao.label_tag }}{{ filtro.dias_projecao }}{{ filtro.dias_projecao.errors }}<small>Projeção condicional; não define dias de trabalho.</small></div>{% endif %}
+  </div>
+  <div class="acoes"><button type="submit">Aplicar filtros</button><a href="{{ request.path }}?periodo=todos">Todo o histórico</a></div>
+  <noscript><p>Preencha somente os campos do tipo de período escolhido.</p></noscript>
+</form>
+{% if not compacto %}{% if dashboard %}<p class="periodo-ativo"><strong>Período aplicado:</strong> {{ dashboard.periodo.descricao }}</p>{% else %}<p class="mensagem alerta" role="alert">Corrija os filtros acima para calcular os indicadores.</p>{% endif %}{% endif %}

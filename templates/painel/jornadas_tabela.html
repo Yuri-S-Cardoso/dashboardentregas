@@ -1,0 +1,5 @@
+{% load brasil %}
+<div class="tabela"><table>
+  <thead><tr><th>Data</th><th>Duração conhecida</th><th>Origem</th><th>Baixas/h</th><th>Ganho/h</th><th>KM</th><th>Litros</th><th>km/L comparáveis</th><th>Combustível</th><th>Outros custos</th><th>Resultado parcial</th><th>Resultado líquido completo</th></tr></thead>
+  <tbody>{% for dia in dashboard.diarios %}<tr><td>{{ dia.data|date:'d/m/Y' }}</td><td>{{ dia.segundos|duracao }}{% if not dia.duracao_completa %}<small class="bloco">Cobertura incompleta</small>{% endif %}</td><td>{{ dia.origem_duracao }}</td><td>{{ dia.baixas_por_hora|indicador }}</td><td>{{ dia.ganho_por_hora|reais }}</td><td>{{ dia.km|numero }}{% if not dia.km_completo %}<small class="bloco">Parcial</small>{% endif %}</td><td>{{ dia.litros|numero }}</td><td>{{ dia.consumo_km_l|numero }}</td><td>{{ dia.combustivel|reais }}</td><td>{{ dia.outros_custos|reais }}</td><td>{{ dia.resultado_parcial|reais }}{% if not dia.custos_completos %}<small class="bloco">Custos incompletos</small>{% endif %}</td><td>{{ dia.resultado_liquido|reais }}</td></tr>{% empty %}<tr><td colspan="12">Sem dados no período.</td></tr>{% endfor %}</tbody>
+</table></div>

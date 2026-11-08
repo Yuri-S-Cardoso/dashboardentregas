@@ -1,0 +1,29 @@
+{% load brasil %}
+<details class="cartao auditoria-operacional" id="auditoria-operacional">
+  <summary>Auditoria de tentativas e registros</summary>
+  <p>Ocorrências nas datas efetivas, incluindo códigos repetidos. Estes números representam tentativas registradas e preservam a rastreabilidade do histórico.</p>
+  <div class="indicadores">
+    <article class="cartao"><h3>Tentativas registradas</h3><strong>{{ resumo.tentativas }}</strong></article>
+    <article class="cartao"><h3>Ocorrências de baixa</h3><strong>{{ resumo.baixas }}</strong></article>
+    <article class="cartao"><h3>Tentativas fracassadas</h3><strong>{{ resumo.insucessos }}</strong><small>Insucesso Total de ocorrências na data efetiva.</small></article>
+    <article class="cartao"><h3>Sucesso por tentativa</h3><strong>{{ resumo.sucesso_percentual|indicador }}{% if resumo.sucesso_percentual is not None %}%{% endif %}</strong><small>Ocorrências de baixa / tentativas.</small></article>
+    <article class="cartao"><h3>Média diária de ocorrências de baixa</h3><strong>{{ resumo.media_diaria_baixas|indicador }}</strong><small>{{ resumo.dias_com_entregas }} dia(s) com registros.</small></article>
+    <article class="cartao"><h3>Intervalo médio</h3><strong>{{ resumo.intervalo_medio_segundos|duracao }}</strong><small>{{ resumo.intervalos_quantidade }} intervalo(s) positivo(s), por horário no mesmo dia.</small></article>
+  </div>
+  <div class="resumo-grade">
+    <p><span>Registros adicionais nos ciclos da população</span><strong>{{ dashboard.conciliacao.ocorrencias_adicionais }}</strong><small>Incluem novas tentativas e recuperações, inclusive posteriores ao período.</small></p>
+    <p><span>Ocorrências idênticas adicionais</span><strong>{{ dashboard.conciliacao.ocorrencias_identicas }}</strong><small>Mesmos código, data, horário, situação e preço. Histórico preservado.</small></p>
+    <p><span>Ocorrências de baixa por hora</span><strong>{{ resumo.baixas_por_hora|indicador }}</strong><small>Origem: {{ resumo.origem_duracao }}.</small></p>
+    <p><span>Melhor dia em ocorrências de baixa</span><strong>{{ resumo.melhor_dia_baixas|default_if_none:'Não informado' }}</strong><small>{% for dia in resumo.melhores_dias %}{{ dia|date:'d/m/Y' }}{% if not forloop.last %}, {% endif %}{% endfor %}</small></p>
+  </div>
+  {% include 'painel/conciliacao_notas.html' %}
+  <h3>Ocorrências e produtividade por data efetiva</h3>
+  <div class="tabela"><table>
+    <thead><tr><th>Data</th><th>Tentativas</th><th>Ocorrências de baixa</th><th>Tentativas fracassadas</th><th>Sucesso por tentativa</th><th>Intervalo médio</th></tr></thead>
+    <tbody>{% for dia in dashboard.diarios %}<tr><td>{{ dia.data|date:'d/m/Y' }}</td><td>{{ dia.tentativas }}</td><td>{{ dia.baixas }}</td><td>{{ dia.insucessos }}</td><td>{{ dia.sucesso_percentual|indicador }}{% if dia.sucesso_percentual is not None %}%{% endif %}</td><td>{{ dia.intervalo_medio_segundos|duracao }}</td></tr>{% empty %}<tr><td colspan="6">Sem dados no período.</td></tr>{% endfor %}</tbody>
+  </table></div>
+  <h3>Ocorrências por semana</h3>{% include 'painel/periodos_tabela.html' with periodos=dashboard.semanas %}
+  <h3>Ocorrências por mês</h3>{% include 'painel/periodos_tabela.html' with periodos=dashboard.meses %}
+  {% for grafico in dashboard.graficos %}{% if grafico.id == 'produtividade' %}{% include 'painel/grafico.html' %}{% endif %}{% endfor %}
+  <p><a href="{% url 'painel:conciliacao' %}?{{ filtros_query }}">Ver códigos, identidades em revisão e alertas financeiros</a></p>
+</details>

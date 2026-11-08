@@ -1,0 +1,11 @@
+<details class="menu-painel" data-menu-painel {% if filtro.errors %}open{% endif %}>
+  <summary class="botao secundario" aria-controls="opcoes-painel">Menu do Painel</summary>
+  <div class="menu-painel-opcoes cartao" id="opcoes-painel" role="region" aria-labelledby="titulo-menu-painel">
+    <div class="cabecalho"><h2 id="titulo-menu-painel">Menu do Painel</h2><button type="button" class="secundario" data-fechar-painel hidden>Fechar menu</button></div>
+    <details {% if filtro.errors %}open{% endif %}><summary>Filtrar período</summary>
+      {% include 'painel/filtros.html' with compacto=True %}
+    </details>
+    {% if dashboard %}{% include 'painel/exportacoes.html' %}{% endif %}
+    <a class="botao secundario" href="{% url 'painel:auditoria' %}?{{ filtros_query }}">Conferência Financeira</a>
+  </div>
+</details>

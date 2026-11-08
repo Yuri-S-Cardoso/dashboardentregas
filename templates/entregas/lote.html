@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block styles %}<link rel="stylesheet" href="{% static 'css/lote.css' %}">{% endblock %}
+{% block content %}
+<div class="cabecalho"><div><p class="legenda">MINHAS ENTREGAS</p><h1>Adicionar Entregas em Lote</h1></div><a href="{% url 'entregas:lista' %}">Voltar à lista</a></div>
+<noscript><p class="mensagem">A grade precisa de JavaScript. Você pode usar o <a href="{% url 'entregas:nova' %}">cadastro individual</a>.</p></noscript>
+<form method="post" id="lote-form" novalidate data-rascunho="{{ rascunho_chave }}" data-enviado="{{ enviado|yesno:'1,0' }}" data-limite="{{ limite }}" data-previa="{{ previa|yesno:'1,0' }}">
+  {% csrf_token %}{{ form.chave }}{{ form.linhas }}{{ form.comprovante }}
+  {% if form.errors or erros_linhas %}<div class="lote-erros" role="alert" tabindex="-1" id="erros-lote"><h2>Confira os dados antes de continuar</h2>{{ form.non_field_errors }}{% for field in form %}{{ field.errors }}{% endfor %}
+    {% for erro in erros_linhas %}<p><a href="#linha-{{ erro.linha }}">Linha {{ erro.linha }}</a>: {% for campo, mensagens in erro.campos.items %}{{ campo }} — {{ mensagens|join:' ' }} {% endfor %}</p>{% endfor %}
+  </div>{% endif %}
+  {% if previa %}
+    <div class="cartao"><h2>Confira a prévia do lote</h2><p><strong>{{ quantidade }} registros</strong> · {{ baixas }} baixas · {{ insucessos }} insucessos.</p><p>Os registros só serão gravados ao confirmar. Horários vazios continuarão não informados.</p></div>
+    {{ form.data_padrao.as_hidden }}{{ form.situacao_padrao.as_hidden }}
+    <div class="tabela" role="region" aria-label="Prévia das entregas" tabindex="0"><table><thead><tr><th scope="col">Linha</th><th scope="col">Código</th><th scope="col">Data</th><th scope="col">Horário</th><th scope="col">Situação</th></tr></thead><tbody>
+      {% for linha in previa %}<tr><th scope="row">{{ forloop.counter }}</th><td>{{ linha.codigo }}</td><td>{{ linha.data|date:'d/m/Y' }}</td><td>{{ linha.horario|time:'H:i:s'|default:'Não informado' }}</td><td>{{ linha.situacao }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    <div class="lote-barra"><span>{{ quantidade }} registros prontos</span><div class="acoes"><button type="submit" name="acao" value="editar" class="secundario">Voltar à edição</button><button type="submit" name="acao" value="salvar">Confirmar e salvar todos</button></div></div>
+  {% else %}
+    <section class="cartao lote-padroes" aria-label="Padrões para novas entregas">
+      <div class="campo">{{ form.data_padrao.label_tag }}{{ form.data_padrao }}<small>Vale para todas as linhas sem outra data.</small></div>
+      <div class="campo">{{ form.situacao_padrao.label_tag }}{{ form.situacao_padrao }}<small>Aplicada às novas linhas; cada entrega pode ser alterada.</small></div>
+    </section>
+    <details class="cartao lote-colagem" id="painel-colagem"><summary>Colar vários códigos ou células do Excel</summary>
+      <p id="ajuda-colagem">Cole um código por linha ou células separadas por tabulação. O layout Código, Data, Horário e Situação é reconhecido; ajuste as colunas abaixo se necessário. Códigos e zeros à esquerda são conservados como texto.</p>
+      <label for="texto-colagem">Dados para colar</label><textarea id="texto-colagem" rows="5" spellcheck="false" aria-describedby="ajuda-colagem" placeholder="000123&#10;000124&#10;000125"></textarea>
+      <div class="acoes lote-colagem-acoes"><button type="button" id="analisar-colagem" class="secundario">Ver prévia da colagem</button><label><input type="checkbox" id="colagem-cabecalho"> Primeira linha é cabeçalho</label></div>
+      <div id="mapeamento-colagem" class="lote-mapeamento"></div>
+      <div id="previa-colagem" hidden><p id="resumo-colagem" role="status"></p><div class="tabela" tabindex="0" role="region" aria-label="Prévia da colagem"><table><thead><tr><th>Código</th><th>Data</th><th>Horário</th><th>Situação</th></tr></thead><tbody id="linhas-colagem"></tbody></table></div><button type="button" id="aplicar-colagem">Adicionar à grade</button></div>
+    </details>
+    <div class="lote-ferramentas"><div class="acoes"><button type="button" id="adicionar-linha" class="secundario">Adicionar Linha</button><button type="button" id="adicionar-vinte" class="secundario">Adicionar 20 Linhas</button><button type="button" id="limpar-lote" class="secundario">Limpar</button></div><p id="estado-rascunho" role="status">Rascunho local temporário nesta tela.</p></div>
+    <p id="ajuda-grade" class="ajuda">Digite um código e pressione <strong>Enter</strong> para ir à próxima linha. Use Tab para os demais campos. Horário é opcional. Códigos repetidos são permitidos. Até {{ limite }} linhas por lote.</p>
+    <p id="aviso-grade" class="lote-aviso" role="status" hidden></p>
+    <div class="tabela lote-grade" role="region" aria-label="Grade de entregas" aria-describedby="ajuda-grade" tabindex="0"><table><thead><tr><th scope="col">#</th><th scope="col">Código</th><th scope="col">Horário <small>(opcional)</small></th><th scope="col">Situação</th><th scope="col">Data individual</th><th scope="col">Remover</th></tr></thead><tbody id="grade-linhas"></tbody></table></div>
+    <div class="lote-barra"><div id="resumo-lote" aria-live="polite" aria-atomic="true"><strong id="contador-lote">0 registros preenchidos</strong><span id="situacoes-lote">0 baixas · 0 insucessos</span></div><div><button type="submit" name="acao" value="prever" id="salvar-lote">Salvar Todos</button><small>Confira a prévia antes de confirmar.</small></div></div>
+  {% endif %}
+</form>
+{{ linhas_iniciais|json_script:'lote-inicial' }}{{ erros_linhas|json_script:'lote-erros' }}
+<template id="modelo-linha"><tr><th scope="row" data-numero></th><td data-label="Código"><input type="text" data-campo="codigo" inputmode="numeric" maxlength="100" autocomplete="off" spellcheck="false"></td><td data-label="Horário"><input type="time" data-campo="horario" step="1" autocomplete="off"></td><td data-label="Situação"><select data-campo="situacao"><option>Baixa realizada</option><option>Insucesso</option></select></td><td class="lote-data"><details><summary>Outra data</summary><input type="text" data-campo="data" inputmode="numeric" placeholder="DD/MM/AAAA" autocomplete="off"><small>Vazio usa a data do lote.</small></details></td><td class="lote-remover"><button type="button" data-remover class="secundario" title="Remover linha">×</button></td></tr></template>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/lote_dados.js' %}" defer></script><script src="{% static 'js/lote.js' %}" defer></script>{% endblock %}

@@ -1,0 +1,40 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ titulo|default:"Conferência de Entregas" }}{% endblock %} · Entregas</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <link rel="stylesheet" href="{% static 'css/responsivo.css' %}">
+  {% block styles %}{% endblock %}
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+  <header class="topo">
+    <a class="marca" href="{% url 'painel:inicio' %}">Conferência de Entregas<span class="marca-apoio">Gestão local de entregas</span></a>
+    {% if user.is_authenticated %}
+      <button type="button" class="menu-botao secundario" data-menu aria-controls="menu-principal" aria-expanded="false" hidden>Menu</button>
+      <div class="usuario"><span>{{ user.get_username }}</span><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="secundario" type="submit">Sair</button></form></div>
+    {% endif %}
+  </header>
+  {% if user.is_authenticated %}
+  <nav aria-label="Menu principal" id="menu-principal" data-aberto="false" {% if filtro %}data-periodo-aplicado="{{ filtros_query }}"{% endif %}>
+    <a href="{% url 'painel:inicio' %}{% if filtro %}?{{ filtros_query }}{% endif %}">Painel Geral</a>
+    <a href="{% url 'entregas:lista' %}">Minhas Entregas</a>
+    <a href="{% url 'conferencia:espelhos' %}">Espelho da Empresa</a>
+    <a href="{% url 'painel:auditoria' %}{% if filtro %}?{{ filtros_query }}{% endif %}">Conferência Financeira</a>
+    <a href="{% url 'jornadas:lista' %}">Jornada e Custos</a>
+    <a href="{% url 'painel:configuracoes' %}">Configurações</a>
+    {% if user.is_staff %}<a href="{% url 'admin:index' %}">Administração</a>{% endif %}
+  </nav>
+  {% endif %}
+  <main id="conteudo">
+    {% for message in messages %}<p role="status" class="mensagem">{{ message }}</p>{% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer>Conferência de Entregas · Sistema local</footer>
+  <script src="{% static 'js/navegacao.js' %}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

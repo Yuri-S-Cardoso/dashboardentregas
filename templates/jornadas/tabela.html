@@ -1,0 +1,8 @@
+{% load brasil %}
+<table>
+  <thead><tr><th scope="col">Data</th><th scope="col">Início real</th><th scope="col">Fim real</th><th scope="col">Odômetro inicial</th><th scope="col">Odômetro final</th><th scope="col">KM</th><th scope="col">Litros</th><th scope="col">Combustível</th><th scope="col">Outros custos</th><th scope="col">Janela histórica</th><th scope="col">Ações</th></tr></thead>
+  <tbody>{% for item in object_list %}<tr>
+    <td>{{ item.data|date:'d/m/Y' }}</td><td>{{ item.inicio_real|time:'H:i:s'|default:'Não informado' }}</td><td>{{ item.fim_real|time:'H:i:s'|default:'Não informado' }}</td>
+    <td>{{ item.odometro_inicial|numero }}</td><td>{{ item.odometro_final|numero }}</td><td>{{ item.quilometragem|numero }}</td><td>{{ item.litros_consumidos|numero }}</td><td>{{ item.custo_combustivel|reais }}</td><td>{{ item.outros_custos|reais }}</td><td>{{ item.janela_historica|default_if_none:'Não informado' }}</td><td><a href="{% url 'jornadas:editar' item.pk %}">Editar</a></td>
+  </tr>{% endfor %}</tbody>
+</table>

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="cartao" data-lote-salvo="{{ recibo.chave }}" data-rascunho="{{ rascunho_chave }}">
+  <h1>{{ recibo.quantidade }} entregas salvas</h1>
+  <p>O lote foi concluído. As entregas já estão disponíveis nas listas, indicadores, conferência e exportações.</p>
+  <p>Data padrão: {{ recibo.data_padrao|date:'d/m/Y' }} · Situação padrão: {{ recibo.situacao_padrao }}.</p>
+  <div class="acoes"><a class="botao" href="{{ proximo_lote }}">Começar outro lote</a><a href="{% url 'entregas:lista' %}">Minhas Entregas</a><a href="{% url 'painel:inicio' %}">Painel Geral</a></div>
+  <p id="estado-rascunho" role="status"></p>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/lote_dados.js' %}" defer></script><script src="{% static 'js/lote.js' %}" defer></script>{% endblock %}

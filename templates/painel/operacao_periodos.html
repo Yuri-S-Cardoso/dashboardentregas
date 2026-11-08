@@ -1,0 +1,15 @@
+{% load brasil %}
+<div class="tabela" tabindex="0" role="region" aria-labelledby="{{ titulo }}"><table>
+  <thead><tr><th scope="col">Período</th><th scope="col">Faturamento</th><th scope="col">Média de receita por dia</th><th scope="col">Taxa de Sucesso</th><th scope="col">Total de entregas</th><th scope="col">Baixas realizadas</th><th scope="col">Insucessos pendentes</th><th scope="col">Horas trabalhadas</th><th scope="col">KM rodados</th><th scope="col">Gasto com combustível</th><th scope="col">Litros</th><th scope="col">Média de KM/L</th></tr></thead>
+  <tbody>{% for item in periodos %}<tr>
+    <th scope="row">{{ item.rotulo }}{% if item.recorte_parcial %}<small class="bloco">Recorte do período</small>{% endif %}</th>
+    <td>{{ item.receita|reais }}</td><td>{{ item.media_receita_dia_arredondada|reais }}<small class="bloco">{{ item.dias_com_entregas }} dia(s) com registros</small></td>
+    <td>{% include 'painel/taxa.html' with indicadores=item.taxa_sucesso_tabela %}</td>
+    <td>{{ item.tentativas }}</td><td>{{ item.baixas }}</td><td>{{ item.indicadores_principais.insucessos_pendentes }}</td>
+    <td>{% include 'painel/medida.html' with valor=item.horas completo=item.duracao_completa casas=2 %}</td>
+    <td>{% include 'painel/medida.html' with valor=item.km completo=item.km_completo casas=3 %}</td>
+    <td>{{ item.combustivel|reais }}{% if item.combustivel is not None and not item.combustivel_completo %}<small class="bloco">Parcial</small>{% endif %}</td>
+    <td>{% include 'painel/medida.html' with valor=item.litros completo=item.litros_completo casas=3 %}</td>
+    <td>{% include 'painel/medida.html' with valor=item.consumo_km_l completo=item.consumo_completo casas=2 %}</td>
+  </tr>{% empty %}<tr><td colspan="12">Sem dados no período.</td></tr>{% endfor %}</tbody>
+</table></div>

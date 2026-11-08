@@ -1,0 +1,55 @@
+.lote-padroes { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; padding:20px; }
+.lote-padroes .campo { margin:0; }
+.lote-colagem { padding:18px 20px; }
+.lote-colagem summary, .lote-data summary { cursor:pointer; color:var(--azul); font-weight:600; }
+.lote-colagem textarea { margin-top:8px; font-family:Consolas,monospace; }
+.lote-colagem-acoes { margin:14px 0; }
+.lote-colagem-acoes label { font-weight:400; }
+.lote-colagem-acoes input { width:auto; min-height:24px; vertical-align:middle; }
+.lote-mapeamento { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:14px; }
+.lote-mapeamento label { flex:1 1 150px; }
+.lote-mapeamento select { margin-top:4px; }
+.lote-ferramentas { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }
+#estado-rascunho { color:#536572; font-size:14px; }
+.lote-grade { max-width:100%; }
+.lote-grade table { table-layout:fixed; min-width:720px; }
+.lote-grade th:first-child { width:45px; }
+.lote-grade th:nth-child(2) { width:25%; }
+.lote-grade th:nth-child(3) { width:160px; }
+.lote-grade th:nth-child(4) { width:185px; }
+.lote-grade th:last-child { width:70px; }
+.lote-grade td, .lote-grade th { padding:8px; }
+.lote-grade input, .lote-grade select { min-width:0; min-height:44px; font-size:16px; }
+.lote-grade input[data-campo="codigo"] { font-family:Consolas,monospace; }
+.lote-grade tbody tr:focus-within { background:#f0f7fb; }
+.lote-grade .linha-erro { background:#fff2ef; outline:2px solid #a02929; outline-offset:-2px; }
+.lote-grade [aria-invalid="true"] { border:2px solid #a02929; }
+.lote-erro-campo { color:#a02929; font-size:13px; display:block; }
+.lote-remover button { padding:7px; min-width:44px; min-height:44px; font-size:22px; }
+.lote-data input { margin-top:7px; }
+.lote-data small { display:block; }
+.lote-barra { position:sticky; bottom:0; z-index:3; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; padding:16px; background:white; border:1px solid var(--borda); border-top:3px solid var(--azul); border-radius:6px; box-shadow:0 -4px 15px #153e5910; padding-bottom:max(16px,env(safe-area-inset-bottom)); }
+.lote-barra strong, .lote-barra span, .lote-barra small { display:block; }
+.lote-barra small { margin-top:3px; }
+.lote-erros, .lote-aviso { padding:18px; background:#fff2ef; border-left:4px solid #a02929; margin-bottom:20px; }
+.lote-erros p { margin:5px 0; }
+@media (max-width:600px) {
+  .lote-padroes { grid-template-columns:1fr; gap:18px; padding:16px; }
+  .lote-grade table { display:block; min-width:0; }
+  .lote-grade thead { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+  .lote-grade tbody { display:block; }
+  .lote-grade tr { display:grid; grid-template-columns:44px minmax(0,1fr) minmax(0,1fr); gap:8px; padding:12px 8px; border-bottom:1px solid var(--borda); }
+  .lote-grade td, .lote-grade th { display:block; padding:0; border:0; min-width:0; width:auto; }
+  .lote-grade th { grid-column:1; grid-row:1; padding-top:20px; text-align:center; background:none; }
+  .lote-grade td:nth-child(2) { grid-column:2 / 4; grid-row:1; }
+  .lote-grade td:nth-child(3) { grid-column:2; grid-row:2; }
+  .lote-grade td:nth-child(4) { grid-column:3; grid-row:2; }
+  .lote-grade td[data-label]::before { content:attr(data-label); display:block; font-size:13px; font-weight:600; }
+  .lote-grade td.lote-data { grid-column:2 / 4; grid-row:3; }
+  .lote-grade td.lote-remover { grid-column:1; grid-row:2 / 4; align-self:center; }
+  .lote-grade select { padding-left:6px; padding-right:2px; }
+  .lote-barra { padding:12px; bottom:0; }
+  .lote-barra > div:last-child { flex:1 1 100%; }
+  .lote-barra button { width:100%; min-height:48px; }
+  .lote-ferramentas .acoes { gap:8px; }
+}

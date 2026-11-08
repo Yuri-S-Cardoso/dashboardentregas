@@ -1,0 +1,7 @@
+{% load brasil %}
+<section class="cartao grafico-cartao">
+  <h3>{{ grafico.titulo }}</h3>
+  {% if grafico.id == 'situacoes' %}<p class="ajuda">Este gráfico de conciliação conta encomendas distintas pela primeira tentativa, com situação atual conhecida. A base é diferente dos três primeiros cards, que contam registros. Os três grupos são exclusivos; casos em revisão ficam separados.</p>{% endif %}
+  <div data-grafico="{{ grafico.id }}"><p class="ajuda">Visualização disponível com JavaScript local.</p></div>
+  <details><summary>Ver tabela de valores</summary><div class="tabela"><table><thead><tr><th>{% if grafico.id == 'situacoes' %}Primeira tentativa{% else %}Período{% endif %}</th>{% for serie in grafico.series %}<th>{{ serie.nome }}</th>{% endfor %}</tr></thead><tbody>{% for linha in grafico.tabela %}<tr><td>{{ linha.rotulo }}</td>{% for valor in linha.valores %}<td>{% if grafico.unidade == 'reais' %}{{ valor|reais }}{% else %}{{ valor|indicador }}{% endif %}</td>{% endfor %}</tr>{% empty %}<tr><td>Sem dados no período.</td></tr>{% endfor %}</tbody></table></div></details>
+</section>

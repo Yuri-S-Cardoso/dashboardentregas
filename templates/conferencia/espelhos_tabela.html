@@ -1,0 +1,8 @@
+{% load brasil %}
+<table>
+  <thead><tr><th scope="col">Competência</th><th scope="col">Baixas pagas</th><th scope="col">Insucessos</th><th scope="col">Valor empresa</th><th scope="col">Vencimento</th><th scope="col">Documento</th><th scope="col">Observações</th><th scope="col">Ações</th></tr></thead>
+  <tbody>{% for item in object_list %}<tr>
+    <td>{{ item.data_competencia|date:'d/m/Y' }}</td><td>{{ item.baixas_pagas|default_if_none:'Não informado' }}</td><td>{{ item.insucessos|default_if_none:'Não informado' }}</td><td>{{ item.valor_empresa|reais }}</td>
+    <td>{{ item.vencimento|date:'d/m/Y'|default:'Não informado' }}</td><td>{{ item.documento|default:'—' }}</td><td>{{ item.observacoes|default:'—' }}</td><td><a href="{% url 'conferencia:editar_espelho' item.pk %}">Editar</a></td>
+  </tr>{% endfor %}</tbody>
+</table>

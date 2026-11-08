@@ -1,0 +1,1 @@
+{% load brasil %}{% if casas == 3 %}{{ valor|numero }}{% else %}{{ valor|indicador }}{% endif %}{% if valor is not None and not completo %}<small class="bloco">Parcial</small>{% endif %}

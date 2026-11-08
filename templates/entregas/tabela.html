@@ -1,0 +1,10 @@
+{% load brasil %}
+<table>
+  <thead><tr><th scope="col">Código</th><th scope="col">Data</th><th scope="col">Horário</th><th scope="col">Situação</th><th scope="col">Valor previsto</th><th scope="col">Ordem original</th><th scope="col">Ações</th></tr></thead>
+  <tbody>{% for item in object_list %}<tr>
+    <td>{{ item.codigo }}</td><td>{{ item.data|date:'d/m/Y' }}</td><td>{{ item.horario|time:'H:i:s'|default:'Não informado' }}</td>
+    <td><span class="situacao {% if item.situacao == 'Insucesso' %}insucesso{% endif %}">{{ item.situacao }}</span></td>
+    <td>{{ item.valor_previsto|reais }}</td><td>{{ item.ordem_original|default_if_none:'—' }}</td>
+    <td class="acoes"><a href="{% url 'entregas:editar' item.pk %}">Editar</a><a href="{% url 'entregas:excluir' item.pk %}">Excluir</a></td>
+  </tr>{% endfor %}</tbody>
+</table>

@@ -1,0 +1,7 @@
+{% load brasil %}
+<table>
+  <thead><tr><th scope="col">Pagamento</th><th scope="col">Início da quinzena</th><th scope="col">Fim da quinzena</th><th scope="col">Valor recebido</th><th scope="col">Comprovante</th><th scope="col">Observações</th><th scope="col">Ações</th></tr></thead>
+  <tbody>{% for item in object_list %}<tr>
+    <td>{{ item.data_pagamento|date:'d/m/Y' }}</td><td>{{ item.inicio_quinzena|date:'d/m/Y' }}</td><td>{{ item.fim_quinzena|date:'d/m/Y' }}</td><td>{{ item.valor_recebido|reais }}</td><td>{{ item.comprovante|default:'—' }}</td><td>{{ item.observacoes|default:'—' }}</td><td><a href="{% url 'conferencia:editar_pagamento' item.pk %}">Editar</a></td>
+  </tr>{% endfor %}</tbody>
+</table>

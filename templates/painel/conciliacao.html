@@ -1,0 +1,41 @@
+{% extends 'base.html' %}{% load brasil static %}
+{% block content %}
+<div class="cabecalho"><h1>Conciliação de entregas</h1><a href="{% url 'painel:inicio' %}?{{ filtros_query }}">Voltar ao painel</a></div>
+{% include 'painel/filtros.html' %}
+{% if dashboard %}
+{% include 'painel/conciliacao_notas.html' %}
+<div class="indicadores">
+  <article class="cartao"><h2>Entregas identificadas</h2><strong>{{ dashboard.conciliacao.entregas_identificadas }}</strong><small>Conflitos ficam em revisão.</small></article>
+  <article class="cartao"><h2>Baixas realizadas</h2><strong>{{ dashboard.conciliacao.concluidas }}</strong><small>Entregas distintas concluídas.</small></article>
+  <article class="cartao"><h2>Entregas recuperadas</h2><strong>{{ dashboard.conciliacao.recuperadas }}</strong><small>Insucesso seguido de baixa posterior válida.</small></article>
+  <article class="cartao"><h2>Insucesso Real</h2><strong>{{ dashboard.conciliacao.insucessos_reais }}</strong><small>Sem baixa posterior registrada.</small></article>
+  <article class="cartao"><h2>Sucesso por encomenda distinta</h2><strong>{{ dashboard.conciliacao.sucesso_percentual|indicador }}{% if dashboard.conciliacao.sucesso_percentual is not None %}%{% endif %}</strong><small>Percentual da auditoria de conciliação; usa entregas distintas.</small></article>
+</div>
+<form method="get" class="cartao filtros">
+  {% for nome, valor in campos_filtro %}<input type="hidden" name="{{ nome }}" value="{{ valor }}">{% endfor %}
+  <div class="campo">{{ consulta.codigo.label_tag }}{{ consulta.codigo }}{{ consulta.codigo.errors }}</div>
+  <div class="campo">{{ consulta.situacao_conciliacao.label_tag }}{{ consulta.situacao_conciliacao }}{{ consulta.situacao_conciliacao.errors }}</div>
+  <button type="submit">Consultar códigos</button>
+</form>
+{% if pagina is not None %}
+<p>{{ pagina.paginator.count }} ciclo(s) na consulta. Os cards mantêm a população completa do período.</p>
+<p><a class="botao secundario" href="{% url 'painel:exportar_conciliacao' %}?{{ consulta_query }}">Baixar tabela de conciliação (CSV)</a></p>
+<div class="tabela" tabindex="0" role="region" aria-label="Tabela de conciliação; deslize para ver todas as colunas">
+<table>
+  <caption>Histórico por código e ciclo candidato — situação atual conhecida</caption>
+  <thead><tr><th>Código / ciclo</th><th>Primeira tentativa</th><th>Primeiro insucesso</th><th>Tentativas</th><th>Baixa posterior / conclusão</th><th>Situação final conhecida</th><th>Auditoria</th></tr></thead>
+  <tbody>{% for ciclo in pagina %}<tr>
+    <td>{{ ciclo.codigo|default:'Sem código' }}<small class="bloco">Ciclo candidato {{ ciclo.ciclo }}</small></td>
+    <td>{{ ciclo.primeira_tentativa|date:'d/m/Y' }}</td>
+    <td>{{ ciclo.primeiro_insucesso|date:'d/m/Y'|default:'Não registrado' }}{% if ciclo.primeiro_insucesso %}<small class="bloco">{{ ciclo.horario_primeiro_insucesso|time:'H:i:s'|default:'Horário não informado' }}</small>{% endif %}</td>
+    <td>{{ ciclo.tentativas }}<small class="bloco">{{ ciclo.baixas }} baixa(s) · {{ ciclo.insucessos }} insucesso(s)</small></td>
+    <td>{{ ciclo.data_baixa|date:'d/m/Y'|default:'Sem baixa posterior válida' }}{% if ciclo.data_baixa %}<small class="bloco">{{ ciclo.horario_baixa|time:'H:i:s'|default:'Horário não informado' }}</small>{% endif %}</td>
+    <td>{{ ciclo.rotulo }}</td>
+    <td>{% for motivo in ciclo.motivos_revisao %}<p class="alerta">{{ motivo }}</p>{% endfor %}{% for alerta in ciclo.alertas_financeiros %}<p class="alerta">{{ alerta }}</p>{% endfor %}<small>Receita registrada: {{ ciclo.receita_registrada|reais }}. IDs: {{ ciclo.ids_registros|join:', ' }}.</small></td>
+  </tr>{% empty %}<tr><td colspan="7">Nenhum código nesta consulta.</td></tr>{% endfor %}</tbody>
+</table></div>
+{% if pagina.has_other_pages %}<nav class="paginacao acoes" aria-label="Páginas da conciliação">{% if pagina.has_previous %}<a href="?{{ consulta_query }}&amp;pagina={{ pagina.previous_page_number }}">Anterior</a>{% endif %}<span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>{% if pagina.has_next %}<a href="?{{ consulta_query }}&amp;pagina={{ pagina.next_page_number }}">Próxima</a>{% endif %}</nav>{% endif %}
+{% else %}<p class="mensagem alerta">Corrija os campos da consulta.</p>{% endif %}
+{% endif %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/filtros.js' %}" defer></script>{% endblock %}

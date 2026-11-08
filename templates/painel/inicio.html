@@ -1,0 +1,56 @@
+{% extends 'base.html' %}{% load brasil static %}
+{% block content %}
+<div class="cabecalho cabecalho-painel">
+  <div><p class="legenda">ACOMPANHAMENTO DAS ENTREGAS</p><h1>Painel Geral</h1>
+    {% if dashboard %}<p class="periodo-ativo"><strong>Período aplicado:</strong> {{ dashboard.periodo.descricao }}</p>{% endif %}
+  </div>
+  {% include 'painel/menu.html' %}
+</div>
+{% if not dashboard %}<p class="mensagem alerta" role="alert">Corrija os filtros no Menu do Painel para calcular os indicadores.</p>{% endif %}
+{% if dashboard %}
+{% if not dashboard.tem_dados %}<p class="mensagem">Nenhum registro encontrado no período selecionado.</p>{% endif %}
+{% include 'painel/encomendas_resumo.html' %}
+<section aria-labelledby="titulo-dias">
+  <h2 id="titulo-dias">Entregas por dia</h2>
+  <div class="tabela" tabindex="0" role="region" aria-labelledby="titulo-dias"><table>
+    <thead><tr><th scope="col">Data</th><th scope="col">Faturamento</th><th scope="col">Taxa de Sucesso</th><th scope="col">Total de entregas</th><th scope="col">Baixas realizadas</th><th scope="col">Total de insucessos</th><th scope="col">Horas trabalhadas</th><th scope="col">KM rodados</th><th scope="col">KM/L</th></tr></thead>
+    <tbody>{% for dia in dashboard.dias_operacionais %}<tr>
+      <th scope="row">{{ dia.data|date:'d/m/Y' }}</th><td>{{ dia.receita|reais }}</td>
+      <td>{% include 'painel/taxa.html' with indicadores=dia.taxa_sucesso_tabela %}</td>
+      <td>{{ dia.tentativas }}</td><td>{{ dia.baixas }}</td><td>{{ dia.insucessos }}</td>
+      <td>{% include 'painel/medida.html' with valor=dia.horas completo=dia.duracao_completa casas=2 %}</td>
+      <td>{% include 'painel/medida.html' with valor=dia.km completo=dia.km_completo casas=3 %}</td>
+      <td>{% include 'painel/medida.html' with valor=dia.consumo_km_l completo=dia.consumo_completo casas=2 %}</td>
+    </tr>{% empty %}<tr><td colspan="9">Sem dados no período.</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+<section aria-labelledby="titulo-semanas"><h2 id="titulo-semanas">Semanas</h2>
+  {% include 'painel/operacao_periodos.html' with periodos=dashboard.semanas titulo='titulo-semanas' %}
+</section>
+<section aria-labelledby="titulo-meses"><h2 id="titulo-meses">Meses</h2>
+  {% include 'painel/operacao_periodos.html' with periodos=dashboard.meses titulo='titulo-meses' %}
+</section>
+<p class="ajuda">Semanas de domingo a sábado. A média de receita usa somente dias com registros de entrega.
+  Taxa de Sucesso das tabelas: taxa de conclusão das encomendas distintas iniciadas neste período, considerando recuperações posteriores. O card principal mantém sua fórmula operacional.
+  “Parcial” indica medidas conhecidas com cobertura incompleta. KM/L considera somente jornadas com distância e litros válidos, pelo método tanque cheio a tanque cheio.</p>
+<section aria-labelledby="titulo-graficos">
+  <h2 id="titulo-graficos">Gráficos do período</h2>
+  <p class="ajuda">Use as legendas para mostrar ou ocultar séries. Valores ausentes não geram barras. As tabelas de cada gráfico também ficam disponíveis sem JavaScript.</p>
+  <div class="graficos-grade">{% for grafico in dashboard.graficos %}{% include 'painel/grafico.html' %}{% endfor %}</div>
+</section>
+{{ dashboard.graficos|json_script:'dados-graficos' }}
+<details class="cartao" id="auditoria-operacional">
+  <summary>Critérios e alertas da conciliação</summary>
+  {% include 'painel/conciliacao_notas.html' %}
+  <p><a href="{% url 'painel:conciliacao' %}?{{ filtros_query }}">Consultar códigos, tentativas e revisões</a></p>
+</details>
+<section class="cartao"><h2>Cadastros e conferência</h2><div class="acoes">
+  <a class="botao" href="{% url 'entregas:lote' %}">Adicionar entregas em lote</a>
+  <a href="{% url 'entregas:nova' %}">Cadastrar entrega</a>
+  <a href="{% url 'conferencia:pagamentos' %}">Pagamentos recebidos</a>
+  <a href="{% url 'jornadas:lista' %}">Jornada e Custos</a>
+  <a href="{% url 'painel:auditoria' %}?{{ filtros_query }}">Conferir este período</a>
+</div></section>
+{% endif %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/filtros.js' %}" defer></script><script src="{% static 'js/menu_painel.js' %}" defer></script><script src="{% static 'js/graficos.js' %}" defer></script>{% endblock %}

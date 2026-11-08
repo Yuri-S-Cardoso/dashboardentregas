@@ -1,0 +1,26 @@
+{% load brasil %}
+<section aria-labelledby="titulo-encomendas">
+  <h2 id="titulo-encomendas">Indicadores de entregas e faturamento</h2>
+  <p class="ajuda">Os três primeiros cards contam registros ocorridos no período selecionado.
+    Pendentes e recuperadas analisam encomendas com primeira tentativa no período, consultando todo o histórico.
+    Referência da conciliação: <strong>{{ dashboard.conciliacao.referencia|date:'d/m/Y'|default:'sem registros' }}</strong>, incluindo baixas posteriores ao período.
+    {% if dashboard.conciliacao.recuperadas_apos_periodo %}{{ dashboard.conciliacao.recuperadas_apos_periodo }} recuperação(ões) registrada(s) após o período.{% endif %}</p>
+  {% with indicadores=dashboard.indicadores_principais %}
+  <div class="indicadores indicadores-encomendas" id="indicadores-encomendas">
+    <article class="cartao"><h3>Total de encomendas</h3><strong>{{ indicadores.total_encomendas }}</strong><small>Todos os registros do período, incluindo repetições.</small></article>
+    <article class="cartao"><h3>Entregas concluídas</h3><strong>{{ indicadores.entregas_concluidas }}</strong><small>Todos os registros de Baixa realizada no período.</small></article>
+    <article class="cartao"><h3>Total com insucesso</h3><strong>{{ indicadores.total_com_insucesso }}</strong><small>Todos os registros de Insucesso no período.</small></article>
+    <article class="cartao"><h3>Insucessos pendentes</h3><strong>{{ indicadores.insucessos_pendentes }}</strong><small>Encomendas distintas sem baixa posterior válida.</small></article>
+    <article class="cartao"><h3>Entregas recuperadas</h3><strong>{{ indicadores.entregas_recuperadas }}</strong><small>Encomendas distintas com insucesso e baixa posterior.</small></article>
+    <article class="cartao"><h3>Taxa de Sucesso</h3><strong>{{ indicadores.taxa_sucesso_arredondada|indicador }}{% if indicadores.taxa_sucesso is not None %}%{% endif %}</strong><small>Baixas registradas / (baixas registradas + pendências distintas).</small></article>
+    {% with faturamento=dashboard.faturamento_quinzenal %}
+    <article class="cartao card-faturamento"><h3>Faturamento Mensal</h3><strong>{{ faturamento.mensal|reais }}</strong><small>{{ faturamento.rotulo }} · mês completo.</small><small>Receita prevista; não representa pagamento recebido.</small></article>
+    <article class="cartao card-faturamento"><h3>Faturamento 1ª Quinzena</h3><strong>{{ faturamento.primeira_quinzena|reais }}</strong><small>01 a 15/{{ faturamento.inicio|date:'m/Y' }}.</small><small>Receita prevista; não representa pagamento recebido.</small></article>
+    <article class="cartao card-faturamento"><h3>Faturamento 2ª Quinzena</h3><strong>{{ faturamento.segunda_quinzena|reais }}</strong><small>16 a {{ faturamento.fim|date:'d/m/Y' }}.</small><small>Receita prevista; não representa pagamento recebido.</small></article>
+    {% endwith %}
+  </div>
+  {% endwith %}
+  <p class="ajuda">A Taxa de Sucesso combina ocorrências de baixa do período e pendências distintas da conciliação.</p>
+  {% if dashboard.conciliacao.codigos_em_revisao %}<p class="mensagem alerta"><strong>Necessita revisão:</strong> {{ dashboard.conciliacao.codigos_em_revisao }} código(s), em {{ dashboard.conciliacao.ciclos_em_revisao }} ciclo(s) candidato(s), com identidade ou cronologia ambígua. Separados da contagem de pendentes e recuperadas; seus registros permanecem nos três primeiros cards e suas baixas compõem a Taxa de Sucesso. <a href="{% url 'painel:conciliacao' %}?{{ filtros_query }}&amp;situacao_conciliacao=revisao">Consultar revisões</a></p>{% endif %}
+  <p><a class="botao secundario" href="{% url 'painel:conciliacao' %}?{{ filtros_query }}">Consultar encomendas e histórico</a></p>
+</section>

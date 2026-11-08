@@ -1,0 +1,21 @@
+{% load brasil %}
+<section class="cartao" aria-labelledby="criterio-conciliacao">
+  <h2 id="criterio-conciliacao">Resultado conhecido das entregas iniciadas no período</h2>
+  <p>População pela <strong>primeira tentativa registrada</strong> no período selecionado.
+    Resultado conhecido até <strong>{{ dashboard.conciliacao.referencia|date:'d/m/Y'|default:'sem registros' }}</strong>, consultando também o histórico posterior ao filtro.</p>
+  <p>Esta auditoria de conciliação conta entregas distintas. Seus resultados e seu percentual por encomenda têm base própria.
+    Os três primeiros cards do painel contam registros por data efetiva; a Taxa de Sucesso do painel combina baixas registradas e pendências distintas.</p>
+  <p class="ajuda">Insucesso Real significa “sem baixa posterior registrada”; não comprova que uma entrega nunca será concluída.
+    A reutilização dos códigos não está confirmada. Conflitos de identidade ou cronologia exigem revisão e ficam fora da taxa.</p>
+  {% if dashboard.conciliacao_ate_fim %}
+    <p><strong>Até o fim do período ({{ dashboard.periodo.fim|date:'d/m/Y' }}):</strong>
+      {{ dashboard.conciliacao_ate_fim.concluidas }} concluídas,
+      {{ dashboard.conciliacao_ate_fim.insucessos_reais }} sem baixa posterior,
+      sucesso por encomenda distinta {{ dashboard.conciliacao_ate_fim.sucesso_percentual|indicador }}{% if dashboard.conciliacao_ate_fim.sucesso_percentual is not None %}%{% endif %}
+      e {{ dashboard.conciliacao_ate_fim.codigos_em_revisao }} código(s) em revisão.</p>
+    <p><strong>No resultado atual conhecido:</strong> {{ dashboard.conciliacao.concluidas_apos_periodo }} conclusão(ões) após o período,
+      das quais {{ dashboard.conciliacao.recuperadas_apos_periodo }} recuperação(ões). A receita permanece na data da baixa.</p>
+  {% endif %}
+  {% if dashboard.conciliacao.codigos_em_revisao %}<p class="mensagem alerta">{{ dashboard.conciliacao.codigos_em_revisao }} código(s), em {{ dashboard.conciliacao.ciclos_em_revisao }} ciclo(s) candidato(s), exigem revisão. Não integram os totais de entregas identificadas nem o percentual por encomenda desta auditoria. Seus registros permanecem nos totais de ocorrências e nas baixas da Taxa de Sucesso do painel.</p>{% endif %}
+  {% if dashboard.conciliacao.alertas_financeiros %}<p class="mensagem alerta">{{ dashboard.conciliacao.alertas_financeiros }} ciclo(s) com alerta financeiro. Os valores registrados foram preservados; confira os documentos na conciliação.</p>{% endif %}
+</section>

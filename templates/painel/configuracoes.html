@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% load brasil %}
+{% block content %}
+<h1>Configurações</h1>
+<p>O valor por baixa será aplicado às novas entregas. Alterações criam uma nova versão e preservam os valores já registrados.</p>
+<form method="post" class="cartao formulario">{% csrf_token %}{% include 'core/campos.html' %}<button type="submit">Salvar nova configuração</button></form>
+<h2>Últimas configurações</h2>
+<div class="tabela"><table>
+  <thead><tr><th scope="col">Versão</th><th scope="col">Registrada em</th><th scope="col">Valor por baixa</th><th scope="col">Meta diária</th><th scope="col">Meta semanal</th><th scope="col">Meta mensal</th></tr></thead>
+  <tbody>{% for versao in versoes %}<tr><td>{{ versao.pk }}</td><td>{{ versao.criada_em|date:'d/m/Y H:i' }}</td><td>{{ versao.valor_por_baixa|reais }}</td><td>{{ versao.meta_diaria|reais }}</td><td>{{ versao.meta_semanal|reais }}</td><td>{{ versao.meta_mensal|reais }}</td></tr>{% empty %}<tr><td colspan="6">Nenhuma versão gravada.</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}

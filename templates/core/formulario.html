@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ titulo }}</h1>
+{% if object %}<p class="ajuda">{{ object.origem }}</p>{% endif %}
+<form method="post" class="cartao formulario">{% csrf_token %}
+  {% include 'core/campos.html' %}
+  <div class="acoes"><button type="submit">Salvar</button><a href="{% url url_lista %}">Cancelar</a></div>
+</form>
+{% endblock %}
