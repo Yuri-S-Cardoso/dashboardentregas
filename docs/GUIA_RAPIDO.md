@@ -17,7 +17,7 @@ está em Conferência Financeira. [Painel atual](PAINEL_GERAL.md).
    Ethernet/Wi-Fi física, ativa, com IPv4 privado e perfil Privado é usada
    automaticamente. Com várias, escolha uma ou 0 para somente computador; sem
    nenhuma, o sistema explica e inicia em localhost. Abra o endereço exibido e
-   faça login. Se faltar usuário, siga a seção 3 do README.
+   faça login. Se faltar usuário, siga a [instalação e criação de acesso no README](../README.md#instalação-no-windows).
 2. **Celular:** conecte à mesma rede confiável e use o endereço indicado pelo
    inicializador; computador e celular usam o mesmo servidor. Se não aparecer,
    use o modo computador e confira o README.
@@ -43,7 +43,7 @@ está em Conferência Financeira. [Painel atual](PAINEL_GERAL.md).
 10. **Backup:** no PowerShell da pasta, execute
     `& '.\.venv\Scripts\python.exe' manage.py backup_local`.
     Confira a mensagem de integridade, tamanho e SHA-256. Não apague cópias anteriores.
-11. **Restaurar:** primeiro encerre o servidor e siga a seção 13 do README.
+11. **Restaurar:** primeiro encerre o servidor e siga [Backup e restauração](../README.md#backup-e-restauração).
     A restauração cria cópia de segurança e pede **RESTAURAR** antes de substituir.
 12. **Encerrar:** Ctrl+C na janela do servidor. Fechar só o navegador não encerra.
 13. **Acesso remoto opcional:** use o inicializador Online somente após conferir

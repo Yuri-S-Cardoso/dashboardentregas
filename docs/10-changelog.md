@@ -1,5 +1,16 @@
 # Histórico de alterações
 
+## 08/11/2026 — apresentação do repositório e política de versionamento
+
+README reescrito com apresentação, funcionalidades atuais, fórmulas de card/tabelas,
+cards financeiros, instalação nova, uso local/LAN/remoto, importação/exportação,
+backup/restauração, testes e arquitetura. `.gitignore` ampliado para bancos/cópias/
+manifestos, arquivos operacionais, segredos ngrok e artefatos de desenvolvimento,
+mantendo fontes, migrations e exemplos públicos. Criado `docs/VERSIONAMENTO.md`.
+Índice/guias ajustados para distinguir relatórios privados da documentação no Git.
+Revisados arquivos e histórico local; não houve commit, push, remoção do índice,
+alteração de histórico ou mudança no banco, aplicação ou implantação.
+
 ## 07/11/2026 — cards de faturamento mensal e quinzenal
 
 Card Faturamento renomeado para Faturamento Mensal e acrescido de Faturamento

@@ -1,5 +1,15 @@
 # Acesso remoto com ngrok
 
+## Uso a partir de um clone
+
+O repositório inclui somente `config/ngrok_online.example.json`, com campos vazios.
+Cada instalação precisa preparar sua própria configuração privada, agente e
+validação. `.local/`, aprovações e relatórios da instalação original não acompanham
+o Git. As observações de “Estado entregue” abaixo registram o histórico daquela
+instalação; não significam que um clone novo já tenha acesso remoto autorizado.
+Scripts de prova citados em `relatorios/` são evidências locais privadas. A prova
+textual do inicializador e os testes de segurança em `tests/` estão versionados.
+
 O modo local mantém `Iniciar_Entregas.bat`, suas configurações e o acesso LAN
 anterior. O modo remoto usa **Iniciar_Entregas_Online.bat**, com Waitress somente
 em `127.0.0.1:8000` e um túnel HTTPS, sem regra de firewall, roteador ou serviço

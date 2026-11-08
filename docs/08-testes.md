@@ -1,5 +1,18 @@
 # Testes e verificações
 
+## Revisão do Git e README — 08/11/2026
+
+Revisados 180 caminhos rastreados e os dois commits disponíveis localmente.
+Banco, configuração privada, planilhas e relatórios não estavam versionados;
+os padrões de domínio encontrados pertenciam aos exemplos sintéticos dos testes.
+Validação do `.gitignore`: 49 caminhos privados ignorados e 16 caminhos de fonte/
+exemplo permitidos; nenhum arquivo rastreado passou a corresponder às exclusões.
+Foram conferidos 42 links locais dos documentos principais e `git diff --check`.
+Suíte existente: **315 Django e 41 JavaScript aprovados**, sem alteração de testes
+ou código produtivo. A instalação documentada foi ensaiada em cópia temporária
+sem dados privados, usando bibliotecas já instaladas em vez de download pela rede.
+Evidências e limitações operacionais ficam no relatório local da revisão.
+
 ## Cards de faturamento mensal/quinzenal — 07/11/2026
 
 Baseline: 303 Django e 41 JavaScript aprovados. Novos 12 Django em

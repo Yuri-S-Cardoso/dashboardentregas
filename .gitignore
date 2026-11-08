@@ -1,21 +1,103 @@
+# Ambientes e artefatos Python; manter requirements.txt e migrations no Git.
 .venv/
+venv/
+env/
+ENV/
 __pycache__/
 *.py[cod]
+*.pyd
+.eggs/
+*.egg-info/
+build/
+dist/
+.tox/
+.nox/
+
+# Segredos e configuração por instalação. Exemplos devem conter só placeholders.
 .env
 .env.*
 !.env.example
 .local/
+.secrets/
+.ngrok/
+.ngrok2/
+ngrok_runtime/
+ngrok_online.json
+ngrok.yml
+ngrok.yaml
+secret_key
+*.key
+*.pem
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+# config/ngrok_online.example.json é público e deve continuar versionado.
+
+# Bancos de trabalho, transações, cópias e manifestos de backup.
+*.sqlite
+*.sqlite-*
+*.sqlite.*
 *.sqlite3
 *.sqlite3-*
-referencias/*.xlsx
-relatorios/
-media/
-staticfiles/
+*.sqlite3.*
+*.db
+*.db-*
+*.db.*
+*.db3
+*.dump
+*.backup
+*.bak
+/backup/
+/backups/
+
+# Dados de negócio, importações, evidências e arquivos produzidos pelo sistema.
+/referencias/
+/relatorios/
+/media/
+/uploads/
+/exports/
+/exportacoes/
+/dados/
+*.xlsx
+*.xls
+*.xlsm
+*.xlsb
+*.ods
+*.csv
+*.tsv
+*.pdf
+*.har
+# Dados sintéticos em arquivos desses formatos exigem exceção explícita e revisão.
+
+# Estáticos de produção são gerados; static/ e templates/ ficam no Git.
+/staticfiles/
+
+# Logs, temporários e arquivos de escritório abertos.
 *.log
+*.log.*
 *.tmp
+*.temp
+*.swp
+*.swo
 ~$*
+
+# Testes, cobertura e caches de ferramentas.
 .coverage
+.coverage.*
+coverage.xml
 htmlcov/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Preferências locais de editores e metadados do sistema operacional.
 .idea/
 .vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini

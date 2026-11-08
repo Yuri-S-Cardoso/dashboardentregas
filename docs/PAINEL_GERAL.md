@@ -115,4 +115,5 @@ cobertura incompleta mostram Parcial. Recortes de semanas/meses são sinalizados
 
 Tabela longa tem foco e rolagem lateral dentro do componente. O teste visual em
 telas físicas deve seguir [VALIDACAO_MANUAL.md](VALIDACAO_MANUAL.md). Evidências,
-backup e resultados: [relatório da alteração](../relatorios/AJUSTE_LAYOUT_PAINEL_GERAL.md).
+backup e resultados ficam no relatório local `relatorios/AJUSTE_LAYOUT_PAINEL_GERAL.md`,
+fora do Git por conter evidências da instalação.
